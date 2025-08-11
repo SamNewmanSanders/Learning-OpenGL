@@ -13,6 +13,8 @@ add_executable(BlankWindow
     src/Wrappers/VAO.cpp
     src/Wrappers/VBO.cpp
     src/Camera.cpp
+    src/Application.cpp
+    src/Helpers.cpp
 )
 
 # after add_executable(MyApp ${SRC_FILES})

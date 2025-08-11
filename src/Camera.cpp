@@ -26,6 +26,10 @@ void Camera::processKeyboard(const char* direction, float deltaTime) {
         position -= right * velocity;
     if (direction == std::string("RIGHT"))
         position += right * velocity;
+    if (direction == std::string("UPWARD"))
+        position += up * velocity;
+    if (direction == std::string("DOWNWARD"))
+        position -= up * velocity;
 }
 
 void Camera::processMouseMovement(float xoffset, float yoffset, bool constrainPitch) {
