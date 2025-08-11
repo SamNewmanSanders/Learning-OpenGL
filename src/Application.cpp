@@ -53,16 +53,30 @@ Application::Application(int width, int height, const char* title)
 
     mvpLoc = glGetUniformLocation(shaderProgram->ID, "uMVP");
 
-    vao = std::make_unique<VAO>();
-    vbo = std::make_unique<VBO>(cubeVertices, sizeof(cubeVertices));
+    sphereVertices = generateSphereVertices(32, 1.0f);
+    sphereIndices = generateSphereIndices(32);
 
+    vao = std::make_unique<VAO>();
+    vbo = std::make_unique<VBO>(sphereVertices.data(), sphereVertices.size() * sizeof(float));
+    ebo = std::make_unique<EBO>(sphereIndices.data(), sphereIndices.size() * sizeof(unsigned int));
 
     // Setup VBO and VAO attributes
     vao->Bind();
-    vao->LinkAttrib(*vbo, 0, 3, GL_FLOAT, 6 * sizeof(float), (void*)0);
-    vao->LinkAttrib(*vbo, 1, 3, GL_FLOAT, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+    vbo->Bind();
+    ebo->Bind();
+
+    // Position attribute
+    vao->LinkAttrib(*vbo, 0, 3, GL_FLOAT, 8 * sizeof(float), (void*)0);
+
+    // Normal attribute
+    vao->LinkAttrib(*vbo, 1, 3, GL_FLOAT, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+
+    // UV attribute
+    vao->LinkAttrib(*vbo, 2, 2, GL_FLOAT, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+
     vao->Unbind();
     vbo->Unbind();
+    ebo->Unbind();
 
 }
 
@@ -124,8 +138,11 @@ void Application::render() {
 
     shaderProgram->Activate();
     glUniformMatrix4fv(mvpLoc, 1, GL_FALSE, glm::value_ptr(mvp));
+
     vao->Bind();
-    glDrawArrays(GL_TRIANGLES, 0, 36);
+    // Number of indices to draw:
+    GLsizei indexCount = static_cast<GLsizei>(sphereIndices.size());
+    glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, 0);
 
     glfwSwapBuffers(window);
     glfwPollEvents();

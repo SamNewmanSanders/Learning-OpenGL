@@ -11,7 +11,9 @@
 #include "cubeData.h"
 #include "VAO.h"
 #include "VBO.h"
+#include "EBO.h"
 #include "Camera.h"
+#include "Helpers.h"
 
 
 class Application
@@ -32,13 +34,16 @@ private:
     GLFWwindow* window;
     Camera camera;
 
+    std::vector<float> sphereVertices;
+    std::vector<unsigned int> sphereIndices;
 
     // Set the following as pointers that are defaulted to nullptr
     // This avoids issues with their constructors being called before OpenGL context is ready
-    
+
     std::unique_ptr<Shader> shaderProgram;
     std::unique_ptr<VAO> vao;
     std::unique_ptr<VBO> vbo;
+    std::unique_ptr<EBO> ebo;
 
     float deltaTime;
     float lastFrame;

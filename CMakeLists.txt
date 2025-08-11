@@ -12,6 +12,7 @@ add_executable(BlankWindow
     src/Wrappers/Shader.cpp
     src/Wrappers/VAO.cpp
     src/Wrappers/VBO.cpp
+    src/Wrappers/EBO.cpp
     src/Camera.cpp
     src/Application.cpp
     src/Helpers.cpp
