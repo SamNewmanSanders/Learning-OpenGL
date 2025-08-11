@@ -1,0 +1,46 @@
+# Ignore build directories (adjust if your build system differs)
+build/
+bin/
+obj/
+
+# Ignore external libraries
+external/
+
+# Ignore Visual Studio / Windows files (if applicable)
+*.vcxproj*
+*.sln
+*.user
+*.opensdf
+*.sdf
+
+# Ignore Mac OS files
+.DS_Store
+
+# Ignore Linux temporary files
+*~
+
+# Ignore compiled object files and executables
+*.o
+*.obj
+*.exe
+*.dll
+*.so
+*.dylib
+
+# Ignore IDE folders (add yours if you use others)
+.vscode/
+.idea/
+
+# Ignore GLFW and GLAD generated files (if you build them)
+glad.c
+glad.h
+KHR/
+
+# Ignore CMake build files (if used)
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+
+# Ignore any log files
+*.log
