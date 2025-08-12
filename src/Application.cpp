@@ -12,7 +12,7 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 
 Application::Application(int width, int height, const char* title)
     : window(nullptr),
-      camera(glm::vec3(0.0f, 0.0f, 3.0f), glm::vec3(0.0f, 1.0f, 0.0f), -90.0f, 0.0f),
+      camera(glm::vec3(0, 0, 3), glm::vec3(0, 1, 0), 0.0f, 0.0f),
       deltaTime(0.0f),
       lastFrame(0.0f)
 {
@@ -41,9 +41,6 @@ Application::Application(int width, int height, const char* title)
         std::exit(EXIT_FAILURE);
     }
 
-    // Initialize shader AFTER GLAD and context are ready
-    shaderProgram = std::make_unique<Shader>("shaders/default.vert", "shaders/default.frag");
-
     glEnable(GL_DEPTH_TEST);
 
     glfwSetWindowUserPointer(window, &camera);
@@ -51,39 +48,28 @@ Application::Application(int width, int height, const char* title)
     glfwSetScrollCallback(window, scroll_callback);
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
-    mvpLoc = glGetUniformLocation(shaderProgram->ID, "uMVP");
+    // mvpLoc = glGetUniformLocation(shaderProgram->ID, "uMVP");
 
-    sphereVertices = generateSphereVertices(32, 1.0f);
-    sphereIndices = generateSphereIndices(32);
 
-    vao = std::make_unique<VAO>();
-    vbo = std::make_unique<VBO>(sphereVertices.data(), sphereVertices.size() * sizeof(float));
-    ebo = std::make_unique<EBO>(sphereIndices.data(), sphereIndices.size() * sizeof(unsigned int));
+    // Initialize shader AFTER GLAD and context are ready    
+    std::shared_ptr<Shader> shaderProgram = std::make_shared<Shader>("shaders/default.vert", "shaders/default.frag");
 
-    // Setup VBO and VAO attributes
-    vao->Bind();
-    vbo->Bind();
-    ebo->Bind();
+    // Assign Renderer
+    renderer = std::make_unique<Renderer>(shaderProgram, window);
+    
+    // Create a mesh for a sphere (rad = 1)
+    auto sphereMesh = std::make_shared<Mesh>(generateSphereVertices(32, 2.0f), generateSphereIndices(32));
+    // Create the entity 
+    auto ball = std::make_shared<Entity>(sphereMesh);
+    ball->SetPosition(glm::vec3(0, 0, 0));
 
-    // Position attribute
-    vao->LinkAttrib(*vbo, 0, 3, GL_FLOAT, 8 * sizeof(float), (void*)0);
-
-    // Normal attribute
-    vao->LinkAttrib(*vbo, 1, 3, GL_FLOAT, 8 * sizeof(float), (void*)(3 * sizeof(float)));
-
-    // UV attribute
-    vao->LinkAttrib(*vbo, 2, 2, GL_FLOAT, 8 * sizeof(float), (void*)(6 * sizeof(float)));
-
-    vao->Unbind();
-    vbo->Unbind();
-    ebo->Unbind();
-
+    renderer->AddEntity(ball);
 }
 
 Application::~Application() {
-    vbo->Delete();
-    vao->Delete();
-    // unique_ptr will auto-delete shaderProgram
+    
+    // Renderer should delete itself
+
     glfwTerminate();
 }
 
@@ -118,12 +104,24 @@ void Application::processInputs() {
 }
 
 void Application::update() {
-    // Future update logic here
+    
+    fpsFrames++;
+    float currentTime = (float)glfwGetTime();
+    float delta = currentTime - fpsTimer;
+
+    if (delta >= 1.0f) {
+        fps = (float)fpsFrames / delta;
+        fpsFrames = 0;
+        fpsTimer = currentTime;
+
+        // Optionally print FPS to console:
+        std::cout << "FPS: " << fps << std::endl;
+    }
 }
 
 void Application::render() {
-    glClearColor(0.12f, 0.12f, 0.14f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    
+
 
     int w, h;
     glfwGetFramebufferSize(window, &w, &h);
@@ -135,17 +133,7 @@ void Application::render() {
 
     glm::mat4 mvp = proj * view * model;
 
-
-    shaderProgram->Activate();
-    glUniformMatrix4fv(mvpLoc, 1, GL_FALSE, glm::value_ptr(mvp));
-
-    vao->Bind();
-    // Number of indices to draw:
-    GLsizei indexCount = static_cast<GLsizei>(sphereIndices.size());
-    glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, 0);
-
-    glfwSwapBuffers(window);
-    glfwPollEvents();
+    renderer->Render(view, proj);
 }
 
 // Callbacks

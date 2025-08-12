@@ -9,13 +9,19 @@ add_executable(BlankWindow
     src/main.cpp
     src/glad.c
 
-    src/Wrappers/Shader.cpp
-    src/Wrappers/VAO.cpp
-    src/Wrappers/VBO.cpp
-    src/Wrappers/EBO.cpp
-    src/Camera.cpp
     src/Application.cpp
     src/Helpers.cpp
+    src/Entity.cpp
+
+    src/Rendering/Wrappers/Shader.cpp
+    src/Rendering/Wrappers/VAO.cpp
+    src/Rendering/Wrappers/VBO.cpp
+    src/Rendering/Wrappers/EBO.cpp
+
+    src/Rendering/Camera.cpp
+    src/Rendering/Renderer.cpp
+    src/Rendering/Mesh.cpp
+    src/Entity.cpp
 )
 
 # after add_executable(MyApp ${SRC_FILES})

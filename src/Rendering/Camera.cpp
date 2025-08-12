@@ -1,4 +1,4 @@
-#include "Camera.h"
+#include "Rendering/Camera.h"
 #include <string>
 
 Camera::Camera(glm::vec3 startPos, glm::vec3 upVec, float startYaw, float startPitch)

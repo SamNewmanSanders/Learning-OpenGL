@@ -1,4 +1,4 @@
-#include "Shader.h"
+#include "Rendering/Wrappers/Shader.h"
 
 // Reads a text file and outputs a string with everything in the text file
 std::string get_file_contents(const char* filename)
@@ -18,6 +18,7 @@ std::string get_file_contents(const char* filename)
     std::cerr << "Could not read file: " << filename << std::endl;
 	return ""; // Return empty string to avoid error
 }
+
 
 // Constructor that build the Shader Program from 2 different shaders
 Shader::Shader(const char* vertexFile, const char* fragmentFile)
@@ -58,6 +59,15 @@ Shader::Shader(const char* vertexFile, const char* fragmentFile)
 
 }
 
+void Shader::SetMat4(const std::string& name, const glm::mat4& matrix) {
+    GLint location = glGetUniformLocation(ID, name.c_str());
+    if (location == -1) {
+        std::cerr << "Warning: uniform '" << name << "' not found in shader!\n";
+        return;
+    }
+    glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(matrix));
+}
+
 // Activates the Shader Program
 void Shader::Activate()
 {
@@ -69,3 +79,10 @@ void Shader::Delete()
 {
 	glDeleteProgram(ID);
 }
+
+
+
+
+
+
+

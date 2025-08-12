@@ -7,12 +7,13 @@
 #include <iostream>
 #include <memory>
 
-#include "Shader.h"
-#include "cubeData.h"
-#include "VAO.h"
-#include "VBO.h"
-#include "EBO.h"
-#include "Camera.h"
+#include "Rendering/Wrappers/Shader.h"
+#include "Rendering/cubeData.h"
+#include "Rendering/Wrappers/VAO.h"
+#include "Rendering/Wrappers/VBO.h"
+#include "Rendering/Wrappers/EBO.h"
+#include "Rendering/Camera.h"
+#include "Rendering/Renderer.h"
 #include "Helpers.h"
 
 
@@ -33,20 +34,17 @@ private:
 
     GLFWwindow* window;
     Camera camera;
+    std::unique_ptr<Renderer> renderer;
 
     std::vector<float> sphereVertices;
     std::vector<unsigned int> sphereIndices;
 
-    // Set the following as pointers that are defaulted to nullptr
-    // This avoids issues with their constructors being called before OpenGL context is ready
-
-    std::unique_ptr<Shader> shaderProgram;
-    std::unique_ptr<VAO> vao;
-    std::unique_ptr<VBO> vbo;
-    std::unique_ptr<EBO> ebo;
-
     float deltaTime;
     float lastFrame;
 
-    GLint mvpLoc;
+
+    // Information
+    float fps = 0.0f;
+    float fpsTimer = 0.0f;
+    int fpsFrames = 0;
 };
