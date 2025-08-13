@@ -1,5 +1,7 @@
 #include "Rendering/Mesh.h"
 
+#include <iostream>
+
 
 Mesh::Mesh(const std::vector<float>& vertices, const std::vector<unsigned int>& indices)
     : indexCount(indices.size())
@@ -13,11 +15,10 @@ Mesh::Mesh(const std::vector<float>& vertices, const std::vector<unsigned int>& 
     vbo->Bind();
     ebo->Bind();    
 
-    // For now only care about position attribute (NOT NORMAL OR TEXTURE - STILL KEEP STRIDE AS 8)
-    vao->LinkAttrib(*vbo, 0, 3, GL_FLOAT, 8 * sizeof(float), (void*)0);
+    vao->LinkAttrib(*vbo, 0, 3, GL_FLOAT, 6 * sizeof(float), (void*)0);                   // position
+    vao->LinkAttrib(*vbo, 1, 3, GL_FLOAT, 6 * sizeof(float), (void*)(3 * sizeof(float))); // normal
 
     vbo->Unbind();
-    ebo->Unbind();
     vao->Unbind();
 }
 

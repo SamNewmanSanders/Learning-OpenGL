@@ -9,6 +9,7 @@
 #include <memory>
 
 #include "Rendering/Wrappers/Shader.h"
+#include "Rendering/Lighting/Light.h"
 #include "Entity.h"
 
 
@@ -24,5 +25,6 @@ private:
     std::vector<std::shared_ptr<Entity>> entities;
     std::shared_ptr<Shader> shaderProgram;
     GLFWwindow* window;
+    Light lightSource;
 };
 

@@ -1,5 +1,6 @@
 #include "Application.h"
 
+
 // TEMPORARY GLOBALS - consider better mouse handling later
 static bool firstMouse = true;
 static float lastX = 400.0f;  // Initial mouse position (center of window)
@@ -10,46 +11,19 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 
+// Forward declare opengl boilerplate
+GLFWwindow* initWindowAndGL(int width, int height, const char* title, Camera& camera);
+
+
+
 Application::Application(int width, int height, const char* title)
     : window(nullptr),
-      camera(glm::vec3(0, 0, 3), glm::vec3(0, 1, 0), 0.0f, 0.0f),
+      camera(glm::vec3(0, 0, 3), glm::vec3(0, 1, 0), -90.0f, 0.0f),
       deltaTime(0.0f),
       lastFrame(0.0f)
 {
-    // Init GLFW
-    if (!glfwInit()) {
-        std::cerr << "Failed to init GLFW\n";
-        std::exit(EXIT_FAILURE);
-    }
-
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
-    window = glfwCreateWindow(width, height, title, nullptr, nullptr);
-    if (!window) {
-        std::cerr << "Failed to create window\n";
-        glfwTerminate();
-        std::exit(EXIT_FAILURE);
-    }
-
-    glfwMakeContextCurrent(window);
-    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
-
-    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
-        std::cerr << "Failed to init GLAD\n";
-        std::exit(EXIT_FAILURE);
-    }
-
-    glEnable(GL_DEPTH_TEST);
-
-    glfwSetWindowUserPointer(window, &camera);
-    glfwSetCursorPosCallback(window, mouse_callback);
-    glfwSetScrollCallback(window, scroll_callback);
-    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-
-    // mvpLoc = glGetUniformLocation(shaderProgram->ID, "uMVP");
-
+    // Boilerplate initialization
+    window = initWindowAndGL(width, height, title, camera);
 
     // Initialize shader AFTER GLAD and context are ready    
     std::shared_ptr<Shader> shaderProgram = std::make_shared<Shader>("shaders/default.vert", "shaders/default.frag");
@@ -57,13 +31,24 @@ Application::Application(int width, int height, const char* title)
     // Assign Renderer
     renderer = std::make_unique<Renderer>(shaderProgram, window);
     
-    // Create a mesh for a sphere (rad = 1)
-    auto sphereMesh = std::make_shared<Mesh>(generateSphereVertices(32, 2.0f), generateSphereIndices(32));
-    // Create the entity 
-    auto ball = std::make_shared<Entity>(sphereMesh);
-    ball->SetPosition(glm::vec3(0, 0, 0));
+    // Test Cube
+    std::vector<float> cubeVerts(cubeVertices, cubeVertices + sizeof(cubeVertices)/sizeof(float));
+    std::vector<unsigned int> cubeInds(cubeIndices, cubeIndices + sizeof(cubeIndices)/sizeof(unsigned int));
+    auto cubeMesh = std::make_shared<Mesh>(cubeVerts, cubeInds);
+    auto cube = std::make_shared<Entity>(cubeMesh);
+    // SET MATERIAL UNIFORMS HERE
+    renderer->AddEntity(cube);
+    cube->SetPosition(glm::vec3(0.0f, 5.0f, 0.0f));
 
-    renderer->AddEntity(ball);
+
+    std::vector<float> sphereVertices = generateSphereVertices(32.0f, 1.0f);
+    std::vector<unsigned int> sphereIndices = generateSphereIndices(32.0f);
+    auto sphereMesh = std::make_shared<Mesh>(sphereVertices, sphereIndices);
+    auto sphere = std::make_shared<Entity>(sphereMesh);
+    renderer->AddEntity(sphere);
+    sphere->getMaterial().diffuse = glm::vec3(1.0f, 0.0f, 0.0f);
+    sphere->getMaterial().specular = glm::vec3(0.1f);
+    sphere->SetPosition(glm::vec3(0.0f, 0.0f, 0.0f));
 }
 
 Application::~Application() {
@@ -120,8 +105,6 @@ void Application::update() {
 }
 
 void Application::render() {
-    
-
 
     int w, h;
     glfwGetFramebufferSize(window, &w, &h);
@@ -136,7 +119,7 @@ void Application::render() {
     renderer->Render(view, proj);
 }
 
-// Callbacks
+// Callbacks ---------------------------------------------------------------------------------------------------------
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
     glViewport(0, 0, width, height);
@@ -164,3 +147,45 @@ void scroll_callback(GLFWwindow* window, double /*xoffset*/, double yoffset) {
     Camera* cam = reinterpret_cast<Camera*>(glfwGetWindowUserPointer(window));
     cam->processMouseScroll((float)yoffset);
 }
+
+
+// OpenGL Boilerplate ------------------------------------------------------------------------------------------------
+
+GLFWwindow* initWindowAndGL(int width, int height, const char* title, Camera& camera) {
+    
+    if (!glfwInit()) {
+        std::cerr << "Failed to init GLFW\n";
+        std::exit(EXIT_FAILURE);
+    }
+
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
+    GLFWwindow* window = glfwCreateWindow(width, height, title, nullptr, nullptr);
+    if (!window) {
+        std::cerr << "Failed to create window\n";
+        glfwTerminate();
+        std::exit(EXIT_FAILURE);
+    }
+
+    glfwMakeContextCurrent(window);
+    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+
+    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
+        std::cerr << "Failed to init GLAD\n";
+        std::exit(EXIT_FAILURE);
+    }
+
+    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_BLEND);                       // Enable blending for transparency
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    glfwSetWindowUserPointer(window, &camera);
+    glfwSetCursorPosCallback(window, mouse_callback);
+    glfwSetScrollCallback(window, scroll_callback);
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
+    return window;
+}
+

@@ -25,8 +25,8 @@ std::vector<float> generateSphereVertices(unsigned int segments, float radius) {
             vertices.push_back(zPos);
 
             // UV coordinates
-            vertices.push_back(xSegment);
-            vertices.push_back(ySegment);
+            //vertices.push_back(xSegment);
+            //vertices.push_back(ySegment);
         }
     }
 

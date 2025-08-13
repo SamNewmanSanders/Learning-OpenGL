@@ -4,6 +4,7 @@
 
 
 #include "Rendering/Mesh.h"
+#include "Rendering/Lighting/Material.h"
 
 
 class Entity {
@@ -18,8 +19,12 @@ public:
 
     std::shared_ptr<Mesh> GetMesh() const;
 
+    Material getMaterial() const { return material; }
+
 private:
     std::shared_ptr<Mesh> mesh;
+    Material material; 
+
     glm::vec3 position;
     glm::vec3 rotation;  // e.g. Euler angles in degrees
     glm::vec3 scale;

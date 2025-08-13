@@ -59,15 +59,6 @@ Shader::Shader(const char* vertexFile, const char* fragmentFile)
 
 }
 
-void Shader::SetMat4(const std::string& name, const glm::mat4& matrix) {
-    GLint location = glGetUniformLocation(ID, name.c_str());
-    if (location == -1) {
-        std::cerr << "Warning: uniform '" << name << "' not found in shader!\n";
-        return;
-    }
-    glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(matrix));
-}
-
 // Activates the Shader Program
 void Shader::Activate()
 {
@@ -80,6 +71,26 @@ void Shader::Delete()
 	glDeleteProgram(ID);
 }
 
+
+void Shader::setFloat(const std::string& name, float value) {
+	GLint location = glGetUniformLocation(ID, name.c_str());
+	glUniform1f(location, value);
+}
+
+void Shader::setVec3(const std::string& name, const glm::vec3& value) {
+	GLint location = glGetUniformLocation(ID, name.c_str());
+	glUniform3fv(location, 1, glm::value_ptr(value));
+}
+
+void Shader::setMat4(const std::string& name, const glm::mat4& matrix) {
+    GLint location = glGetUniformLocation(ID, name.c_str());
+    if (location == -1) {
+        std::cerr << "Warning: uniform '" << name << "' not found in shader!\n";
+        return;
+    }
+	glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(matrix));
+
+}
 
 
 

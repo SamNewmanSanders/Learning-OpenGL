@@ -21,10 +21,12 @@ public:
 	GLuint ID;
 	Shader(const char* vertexFile, const char* fragmentFile);
 
-	void SetMat4(const std::string& name, const glm::mat4& matrix);
-
 	void Activate();
 	void Delete();
+
+	void setFloat(const std::string& name, float value);
+	void setVec3(const std::string& name, const glm::vec3& value);
+	void setMat4(const std::string& name, const glm::mat4& matrix);
 };
 
 
