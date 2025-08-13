@@ -14,8 +14,6 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 // Forward declare opengl boilerplate
 GLFWwindow* initWindowAndGL(int width, int height, const char* title, Camera& camera);
 
-
-
 Application::Application(int width, int height, const char* title)
     : window(nullptr),
       camera(glm::vec3(0, 0, 3), glm::vec3(0, 1, 0), -90.0f, 0.0f),
@@ -31,24 +29,8 @@ Application::Application(int width, int height, const char* title)
     // Assign Renderer
     renderer = std::make_unique<Renderer>(shaderProgram, window);
     
-    // Test Cube
-    std::vector<float> cubeVerts(cubeVertices, cubeVertices + sizeof(cubeVertices)/sizeof(float));
-    std::vector<unsigned int> cubeInds(cubeIndices, cubeIndices + sizeof(cubeIndices)/sizeof(unsigned int));
-    auto cubeMesh = std::make_shared<Mesh>(cubeVerts, cubeInds);
-    auto cube = std::make_shared<Entity>(cubeMesh);
-    // SET MATERIAL UNIFORMS HERE
-    renderer->AddEntity(cube);
-    cube->SetPosition(glm::vec3(0.0f, 5.0f, 0.0f));
-
-
-    std::vector<float> sphereVertices = generateSphereVertices(32.0f, 1.0f);
-    std::vector<unsigned int> sphereIndices = generateSphereIndices(32.0f);
-    auto sphereMesh = std::make_shared<Mesh>(sphereVertices, sphereIndices);
-    auto sphere = std::make_shared<Entity>(sphereMesh);
-    renderer->AddEntity(sphere);
-    sphere->getMaterial().diffuse = glm::vec3(1.0f, 0.0f, 0.0f);
-    sphere->getMaterial().specular = glm::vec3(0.1f);
-    sphere->SetPosition(glm::vec3(0.0f, 0.0f, 0.0f));
+    //Set up scene
+    setupScene();
 }
 
 Application::~Application() {
@@ -114,9 +96,9 @@ void Application::render() {
     glm::mat4 view = camera.getViewMatrix();
     glm::mat4 proj = glm::perspective(glm::radians(camera.getZoom()), aspect, 0.1f, 100.0f);
 
-    glm::mat4 mvp = proj * view * model;
+    glm::vec3 viewPos = camera.getPosition();
 
-    renderer->Render(view, proj);
+    renderer->Render(view, proj, viewPos);
 }
 
 // Callbacks ---------------------------------------------------------------------------------------------------------

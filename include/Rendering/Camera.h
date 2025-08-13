@@ -14,6 +14,7 @@ public:
     void processMouseScroll(float yoffset);
 
     float getZoom() const;
+    glm::vec3 getPosition() const { return position; }
 
 private:
     glm::vec3 position;

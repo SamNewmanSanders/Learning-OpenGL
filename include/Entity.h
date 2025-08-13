@@ -19,7 +19,7 @@ public:
 
     std::shared_ptr<Mesh> GetMesh() const;
 
-    Material getMaterial() const { return material; }
+    Material& getMaterial() { return material; } // Reference so it can be modified directly
 
 private:
     std::shared_ptr<Mesh> mesh;

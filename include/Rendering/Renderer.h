@@ -19,7 +19,7 @@ public:
     Renderer(std::shared_ptr<Shader> shader, GLFWwindow* window);
 
     void AddEntity(std::shared_ptr<Entity> entity);
-    void Render(const glm::mat4& view, const glm::mat4& projection);
+    void Render(const glm::mat4& view, const glm::mat4& projection, const glm::vec3& viewPos);
 
 private:
     std::vector<std::shared_ptr<Entity>> entities;

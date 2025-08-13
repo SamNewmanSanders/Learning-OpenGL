@@ -28,6 +28,7 @@ public:
 
 private:
 
+    void setupScene();
     void processInputs();
     void update();
     void render();

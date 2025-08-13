@@ -12,5 +12,5 @@ struct Material {
     Material()
     : diffuse(1.0f, 1.0f, 1.0f)    
     , specular(1.0f, 1.0f, 1.0f)   
-    , shininess(16.0f) {}            
+    , shininess(8.0f) {}            
 };

@@ -10,6 +10,7 @@ add_executable(BlankWindow
     src/glad.c
 
     src/Application.cpp
+    src/Application_setupScene.cpp
     src/Helpers.cpp
     src/Entity.cpp
 
