@@ -11,6 +11,7 @@ add_executable(BlankWindow
 
     src/Application.cpp
     src/Application_setupScene.cpp
+    src/Application_update.cpp
     src/Helpers.cpp
     src/Entity.cpp
 

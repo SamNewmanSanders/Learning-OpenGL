@@ -1,5 +1,9 @@
 #pragma once
 
+// 1 X 1 X 1 CUBE
+// Note definitng all these vertices and indeces is unnecessary but makes it easier
+// to use the same EBO for cubes and spheres (performance impact negligible)
+
 // 24 unique vertices (positions + normals), 4 per face
 inline float cubeVertices[] = {
     // positions          // normals

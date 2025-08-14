@@ -33,16 +33,21 @@ private:
     void update();
     void render();
 
+    void toggleFullscreen();
+
     GLFWwindow* window;
     Camera camera;
     std::unique_ptr<Renderer> renderer;
 
-    std::vector<float> sphereVertices;
-    std::vector<unsigned int> sphereIndices;
+    std::vector<std::shared_ptr<Entity>> dynamicEntities;
+    std::vector<std::shared_ptr<Entity>> staticEntities;
 
     float deltaTime;
     float lastFrame;
 
+    int windowedPosX, windowedPosY;
+    int windowedWidth, windowedHeight;
+    bool isFullscreen = false;
 
     // Information
     float fps = 0.0f;

@@ -3,8 +3,8 @@
 
 // TEMPORARY GLOBALS - consider better mouse handling later
 static bool firstMouse = true;
-static float lastX = 400.0f;  // Initial mouse position (center of window)
-static float lastY = 300.0f;
+static float lastX = 600.0f;  // Initial mouse position (center of window)
+static float lastY = 400.0f;
 
 // Forward declare callback functions
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
@@ -68,23 +68,17 @@ void Application::processInputs() {
         camera.processKeyboard("UPWARD", deltaTime);
     if (glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS)
         camera.processKeyboard("DOWNWARD", deltaTime);
-}
-
-void Application::update() {
-    
-    fpsFrames++;
-    float currentTime = (float)glfwGetTime();
-    float delta = currentTime - fpsTimer;
-
-    if (delta >= 1.0f) {
-        fps = (float)fpsFrames / delta;
-        fpsFrames = 0;
-        fpsTimer = currentTime;
-
-        // Optionally print FPS to console:
-        std::cout << "FPS: " << fps << std::endl;
+    if (glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS) {
+        static bool pressed = false;
+        if (!pressed) {
+            toggleFullscreen();
+            pressed = true;
+        }       else {
+            pressed = false;
+        }
     }
 }
+
 
 void Application::render() {
 
@@ -98,7 +92,34 @@ void Application::render() {
 
     glm::vec3 viewPos = camera.getPosition();
 
-    renderer->Render(view, proj, viewPos);
+    renderer->beginFrame();
+    for (const auto& entity : dynamicEntities) {
+        renderer->drawEntity(entity, view, proj, viewPos);
+    }
+    for (const auto& entity : staticEntities) {
+        renderer->drawEntity(entity, view, proj, viewPos);
+    }
+    renderer->endFrame();
+}
+
+void Application::toggleFullscreen() {
+    if (!isFullscreen) {
+        // Save windowed position and size
+        glfwGetWindowPos(window, &windowedPosX, &windowedPosY);
+        glfwGetWindowSize(window, &windowedWidth, &windowedHeight);
+
+        // Get primary monitor and its video mode
+        GLFWmonitor* monitor = glfwGetPrimaryMonitor();
+        const GLFWvidmode* mode = glfwGetVideoMode(monitor);
+
+        // Switch to fullscreen
+        glfwSetWindowMonitor(window, monitor, 0, 0, mode->width, mode->height, mode->refreshRate);
+        isFullscreen = true;
+    } else {
+        // Restore to windowed mode
+        glfwSetWindowMonitor(window, nullptr, windowedPosX, windowedPosY, windowedWidth, windowedHeight, 0);
+        isFullscreen = false;
+    }
 }
 
 // Callbacks ---------------------------------------------------------------------------------------------------------

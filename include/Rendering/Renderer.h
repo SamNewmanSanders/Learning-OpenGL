@@ -18,11 +18,14 @@ class Renderer {
 public:
     Renderer(std::shared_ptr<Shader> shader, GLFWwindow* window);
 
-    void AddEntity(std::shared_ptr<Entity> entity);
-    void Render(const glm::mat4& view, const glm::mat4& projection, const glm::vec3& viewPos);
+    void beginFrame();
+    void drawEntity(const std::shared_ptr<Entity>& entities, 
+        const glm::mat4& view,
+        const glm::mat4& projection,
+        const glm::vec3& viewPos);
+    void endFrame();
 
 private:
-    std::vector<std::shared_ptr<Entity>> entities;
     std::shared_ptr<Shader> shaderProgram;
     GLFWwindow* window;
     Light lightSource;

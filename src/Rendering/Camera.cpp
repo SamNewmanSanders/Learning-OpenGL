@@ -3,7 +3,7 @@
 
 Camera::Camera(glm::vec3 startPos, glm::vec3 upVec, float startYaw, float startPitch)
     : front(glm::vec3(0.0f, 0.0f, -1.0f)),
-      speed(2.5f), sensitivity(0.1f), zoom(45.0f)
+      speed(10.0f), sensitivity(0.1f), zoom(45.0f)
 {
     position = startPos;
     worldUp = upVec;
