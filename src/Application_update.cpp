@@ -1,16 +1,8 @@
 #include "Application.h"
 
 void Application::update() {
-    fpsFrames++;
-    float currentTime = (float)glfwGetTime();
-    float delta = currentTime - fpsTimer;
-
-    if (delta >= 1.0f) {
-        fps = (float)fpsFrames / delta;
-        fpsFrames = 0;
-        fpsTimer = currentTime;
-        std::cout << "FPS: " << fps << std::endl;
-    }
+    
+    fpsTracker.update((float)glfwGetTime());
 
     // Bouncing logic
     const float bounds = 25.0f -0.5f -0.5f ; // Sphere radius and wall thickness

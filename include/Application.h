@@ -7,6 +7,12 @@
 #include <iostream>
 #include <memory>
 
+#include "imgui.h"
+#include "imgui_impl_glfw.h"
+#include "imgui_impl_opengl3.h"
+
+#include "SimInfo/fpsTracker.h"
+
 #include "Rendering/Wrappers/Shader.h"
 #include "Rendering/cubeData.h"
 #include "Rendering/Wrappers/VAO.h"
@@ -38,6 +44,7 @@ private:
     GLFWwindow* window;
     Camera camera;
     std::unique_ptr<Renderer> renderer;
+    FpsTracker fpsTracker;
 
     std::vector<std::shared_ptr<Entity>> dynamicEntities;
     std::vector<std::shared_ptr<Entity>> staticEntities;
@@ -49,8 +56,5 @@ private:
     int windowedWidth, windowedHeight;
     bool isFullscreen = false;
 
-    // Information
-    float fps = 0.0f;
-    float fpsTimer = 0.0f;
-    int fpsFrames = 0;
+    
 };

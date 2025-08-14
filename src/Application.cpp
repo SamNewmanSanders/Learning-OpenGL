@@ -1,6 +1,5 @@
 #include "Application.h"
 
-
 // TEMPORARY GLOBALS - consider better mouse handling later
 static bool firstMouse = true;
 static float lastX = 600.0f;  // Initial mouse position (center of window)
@@ -20,7 +19,7 @@ Application::Application(int width, int height, const char* title)
       deltaTime(0.0f),
       lastFrame(0.0f)
 {
-    // Boilerplate initialization
+    // Use boilerplate initialization function
     window = initWindowAndGL(width, height, title, camera);
 
     // Initialize shader AFTER GLAD and context are ready    
@@ -38,6 +37,9 @@ Application::~Application() {
     // Renderer should delete itself
 
     glfwTerminate();
+    ImGui_ImplOpenGL3_Shutdown();
+    ImGui_ImplGlfw_Shutdown();
+    ImGui::DestroyContext();
 }
 
 void Application::run() {
@@ -81,6 +83,17 @@ void Application::processInputs() {
 
 
 void Application::render() {
+    
+    // Start ImGui frame
+    ImGui_ImplOpenGL3_NewFrame();
+    ImGui_ImplGlfw_NewFrame();
+    ImGui::NewFrame();
+    // Draw UI
+    ImGui::SetNextWindowPos(ImVec2(10, 10), ImGuiCond_Always);
+    ImGui::Begin("Debug", nullptr, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_AlwaysAutoResize);
+    ImGui::Text("FPS: %.1f", 1.0f / deltaTime);
+    ImGui::Text("Camera X: %.2f", camera.getPosition().x);
+    ImGui::End();
 
     int w, h;
     glfwGetFramebufferSize(window, &w, &h);
@@ -108,10 +121,14 @@ void Application::render() {
         renderer->drawEntity(entity, view, proj, viewPos);
     }
 
+    //Reenable depth testing
     glDepthMask(GL_TRUE);
     glDisable(GL_BLEND);
 
     renderer->endFrame();
+
+    ImGui::Render();
+ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
 
 void Application::toggleFullscreen() {
@@ -200,6 +217,21 @@ GLFWwindow* initWindowAndGL(int width, int height, const char* title, Camera& ca
     glfwSetCursorPosCallback(window, mouse_callback);
     glfwSetScrollCallback(window, scroll_callback);
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
+
+    // Set up ImGui
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    ImGuiIO& io = ImGui::GetIO(); 
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard; // Keyboard controls
+    // io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;   // Optional
+    // io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable; // Optional
+
+    ImGui::StyleColorsDark(); // Or StyleColorsClassic()
+
+    // Setup Platform/Renderer backends
+    ImGui_ImplGlfw_InitForOpenGL(window, true); // true = let ImGui install its own callbacks
+    ImGui_ImplOpenGL3_Init("#version 330");
 
     return window;
 }

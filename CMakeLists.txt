@@ -5,7 +5,7 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # Add executable
-add_executable(BlankWindow
+add_executable(SummerProj
     src/main.cpp
     src/glad.c
 
@@ -14,6 +14,8 @@ add_executable(BlankWindow
     src/Application_update.cpp
     src/Helpers.cpp
     src/Entity.cpp
+
+    src/SimInfo/fpsTracker.cpp
 
     src/Rendering/Wrappers/Shader.cpp
     src/Rendering/Wrappers/VAO.cpp
@@ -24,20 +26,29 @@ add_executable(BlankWindow
     src/Rendering/Renderer.cpp
     src/Rendering/Mesh.cpp
     src/Entity.cpp
+
+    external/imGui/src/imgui.cpp
+    external/imGui/src/imgui_demo.cpp
+    external/imGui/src/imgui_draw.cpp
+    external/imGui/src/imgui_tables.cpp
+    external/imGui/src/imgui_widgets.cpp
+    external/imGui/src/imgui_impl_glfw.cpp
+    external/imGui/src/imgui_impl_opengl3.cpp
 )
 
 # after add_executable(MyApp ${SRC_FILES})
-add_custom_command(TARGET BlankWindow POST_BUILD
+add_custom_command(TARGET SummerProj POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_directory
             "${CMAKE_SOURCE_DIR}/shaders"
-            "$<TARGET_FILE_DIR:BlankWindow>/shaders"
+            "$<TARGET_FILE_DIR:SummerProj>/shaders"
 )
 
 # This copies the entire shaders directory to the output directory after building
 
 # Add external include path
-target_include_directories(BlankWindow PRIVATE
+target_include_directories(SummerProj PRIVATE
     ${CMAKE_SOURCE_DIR}/external/include # external headers
+    ${CMAKE_SOURCE_DIR}/external/imGui/include # imGui headers (treat like my own code)
     ${CMAKE_SOURCE_DIR}/include          # my own headers
 )
 
@@ -53,10 +64,10 @@ target_include_directories(glfw INTERFACE "${CMAKE_SOURCE_DIR}/external/include"
 find_package(OpenGL REQUIRED)
 
 # Link all dependencies
-target_link_libraries(BlankWindow PRIVATE glfw OpenGL::GL)
+target_link_libraries(SummerProj PRIVATE glfw OpenGL::GL)
 
 if(WIN32)
-    target_link_libraries(BlankWindow PRIVATE opengl32)
+    target_link_libraries(SummerProj PRIVATE opengl32)
 elseif(UNIX AND NOT APPLE)
-    target_link_libraries(BlankWindow PRIVATE dl pthread)
+    target_link_libraries(SummerProj PRIVATE dl pthread)
 endif()
