@@ -142,7 +142,7 @@ void Application::renderUI() {
 
     ImGui::SetNextWindowPos(ImVec2(10, 10), ImGuiCond_Always);
     ImGui::Begin("Debug", nullptr, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_AlwaysAutoResize);
-    ImGui::Text("FPS: %.1f", 1.0f / deltaTime);
+    ImGui::Text("FPS: %.1f", fpsTracker.getFps());
     ImGui::Text("Camera X: %.2f", camera.getPosition().x);
     ImGui::End();
 }

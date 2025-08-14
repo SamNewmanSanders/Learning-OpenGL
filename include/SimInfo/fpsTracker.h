@@ -17,6 +17,7 @@ public:
 
 private:
     float fps;           // last calculated FPS
+    float displayFps;    // FPS value to display
     uint32_t frameCount; // frames counted in the current interval
     float lastTime;      // last time FPS was calculated
 };
