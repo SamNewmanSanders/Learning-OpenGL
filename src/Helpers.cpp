@@ -1,4 +1,5 @@
 #include "Helpers.h"
+#include <algorithm>
 #include <cmath>
 
 std::vector<float> generateSphereVertices(unsigned int segments, float radius) {
@@ -54,4 +55,24 @@ std::vector<unsigned int> generateSphereIndices(unsigned int segments) {
     }
 
     return indices;
+}
+
+
+
+// Sort entities back-to-front based on distance from a reference point (usually the camera)
+std::vector<std::shared_ptr<Entity>> sortEntitiesByDistance(
+    const std::vector<std::shared_ptr<Entity>>& entities,
+    const glm::vec3& referencePos)
+{
+    std::vector<std::shared_ptr<Entity>> sorted = entities;
+
+    std::sort(sorted.begin(), sorted.end(),
+        [&referencePos](const std::shared_ptr<Entity>& a, const std::shared_ptr<Entity>& b) {
+            float distA = glm::length(referencePos - a->getPosition());
+            float distB = glm::length(referencePos - b->getPosition());
+            return distA > distB; // farther objects first
+        }
+    );
+
+    return sorted;
 }

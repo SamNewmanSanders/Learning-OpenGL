@@ -16,7 +16,7 @@ GLFWwindow* initWindowAndGL(int width, int height, const char* title, Camera& ca
 
 Application::Application(int width, int height, const char* title)
     : window(nullptr),
-      camera(glm::vec3(0, 0, 3), glm::vec3(0, 1, 0), -90.0f, 0.0f),
+      camera(glm::vec3(-60, 35, -60), glm::vec3(0, 1, 0), 45.0f, -30.0f), // Best view for me
       deltaTime(0.0f),
       lastFrame(0.0f)
 {
@@ -88,7 +88,7 @@ void Application::render() {
 
     glm::mat4 model = glm::mat4(1.0f);
     glm::mat4 view = camera.getViewMatrix();
-    glm::mat4 proj = glm::perspective(glm::radians(camera.getZoom()), aspect, 0.1f, 100.0f);
+    glm::mat4 proj = glm::perspective(glm::radians(camera.getZoom()), aspect, 0.1f, 200.0f);
 
     glm::vec3 viewPos = camera.getPosition();
 
@@ -96,9 +96,21 @@ void Application::render() {
     for (const auto& entity : dynamicEntities) {
         renderer->drawEntity(entity, view, proj, viewPos);
     }
-    for (const auto& entity : staticEntities) {
+    
+    // Use helper functions to sort by distance and enable transparency
+    auto sortedStatics = sortEntitiesByDistance(staticEntities, camera.getPosition());
+
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glDepthMask(GL_FALSE); // stop writing to depth buffer
+    
+    for (const auto& entity : sortedStatics) {
         renderer->drawEntity(entity, view, proj, viewPos);
     }
+
+    glDepthMask(GL_TRUE);
+    glDisable(GL_BLEND);
+
     renderer->endFrame();
 }
 

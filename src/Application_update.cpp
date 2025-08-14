@@ -13,7 +13,7 @@ void Application::update() {
     }
 
     // Bouncing logic
-    const float bounds = 25.0f -0.5f; // Sphere radius - make this automatic at some point
+    const float bounds = 25.0f -0.5f -0.5f ; // Sphere radius and wall thickness
     for (auto& entity : dynamicEntities) {
         glm::vec3 pos = entity->getPosition();
         glm::vec3 vel = entity->getVelocity();
@@ -23,6 +23,14 @@ void Application::update() {
 
         // Bounce check
         if (pos.y < -bounds) { pos.y = -bounds; vel.y *= -1.0f; }
+        // Left wall
+        if (pos.x < -bounds) { pos.x = -bounds; vel.x *= -1.0f; }
+        // Right wall
+        if (pos.x > bounds) { pos.x = bounds; vel.x *= -1.0f; }
+        // Back wall
+        if (pos.z < -bounds) { pos.z = -bounds; vel.z *= -1.0f; }
+        // Front wall
+        if (pos.z > bounds) { pos.z = bounds; vel.z *= -1.0f; }
 
         entity->setPosition(pos);
         entity->setVelocity(vel);

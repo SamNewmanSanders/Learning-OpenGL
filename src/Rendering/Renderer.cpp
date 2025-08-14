@@ -4,7 +4,7 @@ Renderer::Renderer(std::shared_ptr<Shader> shader, GLFWwindow* window)
     : shaderProgram(shader), window(window) 
     {
         // Add light source
-        lightSource = { glm::vec3(10.0f, 10.0f, 10.0f),
+        lightSource = { glm::vec3(10.0f, -10.0f, -10.0f),
                 glm::vec3(1.0f, 1.0f, 1.0f),
                 1.0f };
     }
@@ -34,6 +34,8 @@ void Renderer::drawEntity(const std::shared_ptr<Entity>& entity,
     shaderProgram->setMat4("model", model);
     shaderProgram->setMat4("view", view);
     shaderProgram->setMat4("projection", projection);
+
+    shaderProgram->setFloat("uAlpha", entity->getMaterial().alpha);
 
     entity->getMesh()->Draw();
     
