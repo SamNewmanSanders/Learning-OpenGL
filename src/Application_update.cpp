@@ -7,8 +7,8 @@ void Application::update() {
     // Bouncing logic
     const float bounds = 25.0f -0.5f -0.5f ; // Sphere radius and wall thickness
     for (auto& entity : dynamicEntities) {
-        glm::vec3 pos = entity->getPosition();
-        glm::vec3 vel = entity->getVelocity();
+        glm::vec3 pos = entity.getPosition();
+        glm::vec3 vel = entity.getVelocity();
 
         vel+= glm::vec3(0.0f, -9.81f, 0.0f) * deltaTime; // Gravity effect
         pos += vel * deltaTime;
@@ -24,7 +24,7 @@ void Application::update() {
         // Front wall
         if (pos.z > bounds) { pos.z = bounds; vel.z *= -1.0f; }
 
-        entity->setPosition(pos);
-        entity->setVelocity(vel);
+        entity.setPosition(pos);
+        entity.setVelocity(vel);
     }
 }

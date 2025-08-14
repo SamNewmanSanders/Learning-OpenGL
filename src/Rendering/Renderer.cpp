@@ -15,15 +15,22 @@ void Renderer::beginFrame() {
     shaderProgram->Activate();
 }
 
-void Renderer::drawEntity(const std::shared_ptr<Entity>& entity,
-    const glm::mat4& view, const glm::mat4& projection,
-    const glm::vec3& viewPos) {
+void Renderer::drawEntity(Entity& entity,
+    const Camera& camera) {
 
-    glm::mat4 model = entity->getModelMatrix();
+    int w, h;
+    glfwGetFramebufferSize(window, &w, &h);
+    float aspect = (w > 0 && h > 0) ? (float)w / (float)h : 4.0f / 3.0f;
 
-    shaderProgram->setVec3("material.diffuse", entity->getMaterial().diffuse);
-    shaderProgram->setVec3("material.specular", entity->getMaterial().specular);
-    shaderProgram->setFloat("material.shininess", entity->getMaterial().shininess);
+    glm::mat4 model = entity.getModelMatrix();
+    glm::mat4 view = camera.getViewMatrix();
+    glm::mat4 projection = glm::perspective(glm::radians(camera.getZoom()), aspect, 0.1f, 200.0f);
+    glm::vec3 viewPos = camera.getPosition();
+
+
+    shaderProgram->setVec3("material.diffuse", entity.getMaterial().diffuse);
+    shaderProgram->setVec3("material.specular", entity.getMaterial().specular);
+    shaderProgram->setFloat("material.shininess", entity.getMaterial().shininess);
 
     shaderProgram->setVec3("light.position", lightSource.position);
     shaderProgram->setVec3("light.color", lightSource.color);
@@ -35,9 +42,9 @@ void Renderer::drawEntity(const std::shared_ptr<Entity>& entity,
     shaderProgram->setMat4("view", view);
     shaderProgram->setMat4("projection", projection);
 
-    shaderProgram->setFloat("uAlpha", entity->getMaterial().alpha);
+    shaderProgram->setFloat("uAlpha", entity.getMaterial().alpha);
 
-    entity->getMesh()->Draw();
+    entity.getMesh()->Draw();
     
 }
 

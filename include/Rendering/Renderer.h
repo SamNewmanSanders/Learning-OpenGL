@@ -10,6 +10,7 @@
 
 #include "Rendering/Wrappers/Shader.h"
 #include "Rendering/Lighting/Light.h"
+#include "Rendering/Camera.h"   
 #include "Entity.h"
 
 
@@ -19,10 +20,8 @@ public:
     Renderer(std::shared_ptr<Shader> shader, GLFWwindow* window);
 
     void beginFrame();
-    void drawEntity(const std::shared_ptr<Entity>& entities, 
-        const glm::mat4& view,
-        const glm::mat4& projection,
-        const glm::vec3& viewPos);
+    void drawEntity(Entity& entity, 
+        const Camera& camera);
     void endFrame();
 
 private:

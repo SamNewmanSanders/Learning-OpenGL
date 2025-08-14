@@ -14,7 +14,7 @@ public:
     Entity(std::shared_ptr<Mesh> mesh);
 
     void setPosition(const glm::vec3& pos);
-    glm::vec3& getPosition() { return position; }
+    const glm::vec3& getPosition() const { return position; }
     void setRotation(const glm::vec3& rot);  // or use quaternion
     void setScale(const glm::vec3& scale);
 
