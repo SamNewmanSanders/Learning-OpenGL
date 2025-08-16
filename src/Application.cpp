@@ -9,7 +9,9 @@ Application::Application(int width, int height, const char* title)
 {
     initWindow(width, height, title);
     initOpenGL();
-    initImGui();
+    
+    // Initialize imgui with uihandler class
+    uiHandler = std::make_unique<UIHandler>(window, fpsTracker, camera);
 
     auto shaderProgram = std::make_shared<Shader>("shaders/default.vert", "shaders/default.frag");
     renderer = std::make_unique<Renderer>(shaderProgram, window);
@@ -18,9 +20,6 @@ Application::Application(int width, int height, const char* title)
 }
 
 Application::~Application() {
-    ImGui_ImplOpenGL3_Shutdown();
-    ImGui_ImplGlfw_Shutdown();
-    ImGui::DestroyContext();
     glfwDestroyWindow(window);
     glfwTerminate();
 }
@@ -45,7 +44,7 @@ void Application::initWindow(int width, int height, const char* title) {
 
     glfwMakeContextCurrent(window);
 
-    // Store the application class in the GLWF window
+    // Store the application class in the GLWF window. This way can access everything it wants
     glfwSetWindowUserPointer(window, this);
 
     glfwSetFramebufferSizeCallback(window, framebufferSizeCallback);
@@ -60,29 +59,18 @@ void Application::initOpenGL() {
     }
 
     glEnable(GL_DEPTH_TEST);
-    //glEnable(GL_BLEND);
-    //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 }
 
-void Application::initImGui() {
-    IMGUI_CHECKVERSION();
-    ImGui::CreateContext();
-    ImGuiIO& io = ImGui::GetIO();
-    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
-
-    ImGui::StyleColorsDark();
-
-    ImGui_ImplGlfw_InitForOpenGL(window, true);
-    ImGui_ImplOpenGL3_Init("#version 330");
-}
 
 // === Main Loop ===
 void Application::run() {
     while (!glfwWindowShouldClose(window)) {
         float currentFrame = (float)glfwGetTime();
-        deltaTime = currentFrame - lastFrame;
+        deltaTime = (currentFrame - lastFrame);
         lastFrame = currentFrame;
 
         processInputs();
@@ -93,61 +81,53 @@ void Application::run() {
 
 // === Loop Steps ===
 void Application::processInputs() {
-    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-        glfwSetWindowShouldClose(window, true);
 
-    if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) camera.processKeyboard("FORWARD", deltaTime);
-    if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) camera.processKeyboard("BACKWARD", deltaTime);
-    if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) camera.processKeyboard("LEFT", deltaTime);
-    if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) camera.processKeyboard("RIGHT", deltaTime);
-    if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS) camera.processKeyboard("UPWARD", deltaTime);
-    if (glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS) camera.processKeyboard("DOWNWARD", deltaTime);
-
-    if (glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS) {
-        static bool pressed = false; // Acts like a debouncer
-        if (!pressed) {
-            toggleFullscreen();
-            pressed = true;
-        }
-    } else {
-        static bool pressed = false;
+    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS){
+            glfwSetWindowShouldClose(window, true);
     }
 
-    if (glfwGetKey(window, GLFW_KEY_TAB) == GLFW_PRESS) {
-        if (!input.tabPressedLastFrame) {
-            input.mouseEnabled = !input.mouseEnabled;
-            if (input.mouseEnabled) {
-                glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-            } else {
-                glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-                input.firstMouse = true;
-            }
-            input.tabPressedLastFrame = true;
-        }
-    } else {
+
+    // Use a lambda function to handle camera movement
+    auto handleCameraKey = [&](int key, const char* dir) {
+        if (glfwGetKey(window, key) == GLFW_PRESS)
+            camera.processKeyboard(dir, deltaTime);
+    };
+
+    // Call the lambda for each key
+    handleCameraKey(GLFW_KEY_UP, "FORWARD");
+    handleCameraKey(GLFW_KEY_DOWN, "BACKWARD");
+    handleCameraKey(GLFW_KEY_LEFT, "LEFT");
+    handleCameraKey(GLFW_KEY_RIGHT, "RIGHT");
+    handleCameraKey(GLFW_KEY_1, "UPWARD");
+    handleCameraKey(GLFW_KEY_2, "DOWNWARD");
+
+    // Fullscreen toggle with proper debouncing
+    static bool fPressedLastFrame = false;
+    bool fPressedNow = glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS;
+
+    if (fPressedNow && !fPressedLastFrame) {
+        toggleFullscreen();
+    }
+    fPressedLastFrame = fPressedNow;
+
+    // Mouse toggle with Tab key
+    bool tabPressedNow = glfwGetKey(window, GLFW_KEY_TAB) == GLFW_PRESS;
+    if (tabPressedNow && !input.tabPressedLastFrame) {
+        input.mouseEnabled = !input.mouseEnabled;
+        glfwSetInputMode(window,
+                         GLFW_CURSOR,
+                         input.mouseEnabled ? GLFW_CURSOR_NORMAL : GLFW_CURSOR_DISABLED);
+        if (!input.mouseEnabled) input.firstMouse = true;
+
+        input.tabPressedLastFrame = true;
+    } else if (!tabPressedNow) {
         input.tabPressedLastFrame = false;
     }
 }
 
 void Application::render() {
-    renderUI();
-    renderScene();
-}
 
-// === Rendering Helpers ===
-void Application::renderUI() {
-    ImGui_ImplOpenGL3_NewFrame();
-    ImGui_ImplGlfw_NewFrame();
-    ImGui::NewFrame();
-
-    ImGui::SetNextWindowPos(ImVec2(10, 10), ImGuiCond_Always);
-    ImGui::Begin("Debug", nullptr, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_AlwaysAutoResize);
-    ImGui::Text("FPS: %.1f", fpsTracker.getFps());
-    ImGui::Text("Camera X: %.2f", camera.getPosition().x);
-    ImGui::End();
-}
-
-void Application::renderScene() {
+    uiHandler->beginFrame();
 
     renderer->beginFrame();
 
@@ -167,11 +147,11 @@ void Application::renderScene() {
     glDepthMask(GL_TRUE);
     glDisable(GL_BLEND);
 
-    ImGui::Render();
-    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+    uiHandler->render(deltaTimeMultiplier);
 
     renderer->endFrame();
 }
+
 
 // === Utility ===
 void Application::toggleFullscreen() {

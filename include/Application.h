@@ -1,3 +1,5 @@
+#pragma once
+
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
@@ -11,7 +13,8 @@
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
 
-#include "SimInfo/fpsTracker.h"
+#include "Utils/fpsTracker.h"
+#include "uiHandler.h"
 
 #include "Rendering/Wrappers/Shader.h"
 #include "Rendering/cubeData.h"
@@ -20,11 +23,44 @@
 #include "Rendering/Wrappers/EBO.h"
 #include "Rendering/Camera.h"
 #include "Rendering/Renderer.h"
-#include "Helpers.h"
+#include "Utils/Helpers.h"
 
 
-// Forward-declare ImGui structs
-struct ImGuiIO;
+#pragma once
+
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+
+#include <iostream>
+#include <memory>
+
+#include "imgui.h"
+#include "imgui_impl_glfw.h"
+#include "imgui_impl_opengl3.h"
+
+#include "Utils/fpsTracker.h"
+#include "uiHandler.h"
+
+#include "Rendering/Wrappers/Shader.h"
+#include "Rendering/cubeData.h"
+#include "Rendering/Wrappers/VAO.h"
+#include "Rendering/Wrappers/VBO.h"
+#include "Rendering/Wrappers/EBO.h"
+#include "Rendering/Camera.h"
+#include "Rendering/Renderer.h"
+#include "Utils/Helpers.h"
+
+
+// Declare Globals
+
+inline int numSpheres = 3;
+inline float boxSize = 50.0f;
+inline float wallThickness = 1.0f;
+inline float sphereRadius = 5.0f;
+inline float cubeTransparency = 0.1f;
 
 class Application {
 public:
@@ -48,14 +84,17 @@ private:
     GLFWwindow* window;
     Camera camera;
     std::unique_ptr<Renderer> renderer;
+    FpsTracker fpsTracker;
+    std::unique_ptr<UIHandler> uiHandler;
+
     std::vector<Entity> dynamicEntities;
     std::vector<Entity> staticEntities;
 
-    FpsTracker fpsTracker;
 
     // Timing
     float deltaTime;
     float lastFrame;
+    float deltaTimeMultiplier = 1.0f;
 
     // Input
     InputState input;
@@ -77,10 +116,6 @@ private:
     void update();
     void render();
 
-    // Rendering
-    void renderUI();
-    void renderScene();
-
     // Utility 
     void toggleFullscreen();
 
@@ -93,3 +128,4 @@ private:
     static void mouseCallback(GLFWwindow* window, double xpos, double ypos);
     static void scrollCallback(GLFWwindow* window, double xoffset, double yoffset);
 };
+

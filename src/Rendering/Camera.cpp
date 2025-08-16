@@ -1,5 +1,5 @@
 #include "Rendering/Camera.h"
-#include <string>
+#include <cstring>
 
 Camera::Camera(glm::vec3 startPos, glm::vec3 upVec, float startYaw, float startPitch)
     : front(glm::vec3(0.0f, 0.0f, -1.0f)),
@@ -18,19 +18,22 @@ glm::mat4 Camera::getViewMatrix() const {
 
 void Camera::processKeyboard(const char* direction, float deltaTime) {
     float velocity = speed * deltaTime;
-    if (direction == std::string("FORWARD"))
+
+    // Use string compare function - quicker than converting from const char* to std::string
+    if (strcmp(direction, "FORWARD") == 0)
         position += front * velocity;
-    if (direction == std::string("BACKWARD"))
+    else if (strcmp(direction, "BACKWARD") == 0)
         position -= front * velocity;
-    if (direction == std::string("LEFT"))
+    else if (strcmp(direction, "LEFT") == 0)
         position -= right * velocity;
-    if (direction == std::string("RIGHT"))
+    else if (strcmp(direction, "RIGHT") == 0)
         position += right * velocity;
-    if (direction == std::string("UPWARD"))
+    else if (strcmp(direction, "UPWARD") == 0)
         position += up * velocity;
-    if (direction == std::string("DOWNWARD"))
+    else if (strcmp(direction, "DOWNWARD") == 0)
         position -= up * velocity;
 }
+
 
 void Camera::processMouseMovement(float xoffset, float yoffset, bool constrainPitch) {
     xoffset *= sensitivity;

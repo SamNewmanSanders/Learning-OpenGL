@@ -45,7 +45,6 @@ void Renderer::drawEntity(Entity& entity,
     shaderProgram->setFloat("uAlpha", entity.getMaterial().alpha);
 
     entity.getMesh()->Draw();
-    
 }
 
 void Renderer::endFrame() {
