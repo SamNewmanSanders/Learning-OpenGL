@@ -17,6 +17,7 @@ add_executable(SummerProj
 
     src/Utils/Helpers.cpp
     src/Utils/fpsTracker.cpp
+    src/Utils/performanceLogger.cpp
 
     src/Rendering/Wrappers/Shader.cpp
     src/Rendering/Wrappers/VAO.cpp

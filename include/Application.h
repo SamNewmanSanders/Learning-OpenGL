@@ -13,8 +13,8 @@
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
 
-#include "Utils/fpsTracker.h"
 #include "uiHandler.h"
+#include "Entity.h"
 
 #include "Rendering/Wrappers/Shader.h"
 #include "Rendering/cubeData.h"
@@ -23,43 +23,19 @@
 #include "Rendering/Wrappers/EBO.h"
 #include "Rendering/Camera.h"
 #include "Rendering/Renderer.h"
+
 #include "Utils/Helpers.h"
-
-
-#pragma once
-
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
-
-#include <iostream>
-#include <memory>
-
-#include "imgui.h"
-#include "imgui_impl_glfw.h"
-#include "imgui_impl_opengl3.h"
-
 #include "Utils/fpsTracker.h"
-#include "uiHandler.h"
+#include "Utils/performanceLogger.h"
 
-#include "Rendering/Wrappers/Shader.h"
-#include "Rendering/cubeData.h"
-#include "Rendering/Wrappers/VAO.h"
-#include "Rendering/Wrappers/VBO.h"
-#include "Rendering/Wrappers/EBO.h"
-#include "Rendering/Camera.h"
-#include "Rendering/Renderer.h"
-#include "Utils/Helpers.h"
 
 
 // Declare Globals
 
-inline int numSpheres = 3;
+inline int numSpheres = 300;
 inline float boxSize = 50.0f;
 inline float wallThickness = 1.0f;
-inline float sphereRadius = 5.0f;
+inline float sphereRadius = 0.5f;
 inline float cubeTransparency = 0.1f;
 
 class Application {
@@ -86,6 +62,8 @@ private:
     std::unique_ptr<Renderer> renderer;
     FpsTracker fpsTracker;
     std::unique_ptr<UIHandler> uiHandler;
+    PerformanceLogger perfLogger;
+
 
     std::vector<Entity> dynamicEntities;
     std::vector<Entity> staticEntities;

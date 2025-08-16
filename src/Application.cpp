@@ -20,6 +20,11 @@ Application::Application(int width, int height, const char* title)
 }
 
 Application::~Application() {
+
+    // Print report
+    float averageFPS = fpsTracker.getAverageFps();
+    perfLogger.report(averageFPS);
+
     glfwDestroyWindow(window);
     glfwTerminate();
 }
@@ -73,9 +78,16 @@ void Application::run() {
         deltaTime = (currentFrame - lastFrame);
         lastFrame = currentFrame;
 
+
         processInputs();
+
+        perfLogger.beginStage("Update");
         update();
+        perfLogger.endStage("Update");
+
+        perfLogger.beginStage("Render");
         render();
+        perfLogger.endStage("Render");
     }
 }
 
