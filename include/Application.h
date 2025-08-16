@@ -32,7 +32,7 @@
 
 // Declare Globals
 
-inline int numSpheres = 300;
+inline int numSpheres = 3;
 inline float boxSize = 50.0f;
 inline float wallThickness = 1.0f;
 inline float sphereRadius = 0.5f;
