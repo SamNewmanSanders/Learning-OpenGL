@@ -15,6 +15,7 @@
 
 #include "uiHandler.h"
 #include "Entity.h"
+#include "PhysicsUpdater.h"
 
 #include "Rendering/Wrappers/Shader.h"
 #include "Rendering/cubeData.h"
@@ -61,6 +62,7 @@ private:
     GLFWwindow* window;
     Camera camera;
     std::unique_ptr<Renderer> renderer;
+    std::unique_ptr<PhysicsUpdater> physicsUpdater;
     FpsTracker fpsTracker;
     std::unique_ptr<UIHandler> uiHandler;
     PerformanceLogger perfLogger;

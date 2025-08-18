@@ -11,7 +11,7 @@ add_executable(SummerProj
 
     src/Application.cpp
     src/Application_setupScene.cpp
-    src/Application_update.cpp
+    src/PhysicsUpdater.cpp
     src/Entity.cpp
     src/uiHandler.cpp
 

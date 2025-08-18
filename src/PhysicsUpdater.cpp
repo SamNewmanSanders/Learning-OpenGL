@@ -1,9 +1,11 @@
-#include "Application.h"
+#include "PhysicsUpdater.h"
 
-void Application::update() {
+PhysicsUpdater::PhysicsUpdater(float boxSize, float sphereRadius, float wallThickness) 
+: boxSize(boxSize), sphereRadius(sphereRadius), wallThickness(wallThickness) {}
+
+
+void PhysicsUpdater::update(float deltaTimeMultiplier, float deltaTime, std::vector<Entity>& dynamicEntities) {
     
-    fpsTracker.update((float)glfwGetTime());
-
     // Bouncing logic
     const float bounds = boxSize/2 - sphereRadius - wallThickness/2 ; // Sphere radius and wall thickness
 
