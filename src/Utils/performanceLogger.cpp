@@ -15,9 +15,17 @@ void PerformanceLogger::endStage(const std::string& name) {
 }
 
 void PerformanceLogger::report(float averageFPS) const {
+
+    // Messy way of doing this but isn't critical so cba
+    double totalTimeLogged = 0.0f;  
+    for (const auto& [stage, time] : totals) {
+        totalTimeLogged += time;
+    }
+    
     std::cout << "\n------Perfomance Report------\n";
     for (const auto& [stage, time] : totals) {
-        std::cout << stage << ": " << time << " ms total\n";
+        float percentage = (time / totalTimeLogged) * 100;
+        std::cout << stage << ": " << time << " ms total (" << percentage << "% of logged time)\n";
     }
     std::cout << "\nAverage FPS: " << averageFPS << "\n";
     std::cout << "-----------------------------\n\n";
