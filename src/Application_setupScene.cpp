@@ -33,11 +33,14 @@ void Application::setupScene()
     addWall(glm::vec3(0.0f, 0.0f, halfBox + halfWall), glm::vec3(boxSize, boxSize, wallThickness));    // front
     addWall(glm::vec3(-halfBox - halfWall, 0.0f, 0.0f), glm::vec3(wallThickness, boxSize, boxSize));  // left
     addWall(glm::vec3(halfBox + halfWall, 0.0f, 0.0f), glm::vec3(wallThickness, boxSize, boxSize));   // right
+    addWall(glm::vec3(0.0f, halfBox + halfWall, 0.0f), glm::vec3(boxSize, wallThickness, boxSize)); // top
+
+
 
     // Sphere setup
     auto sphereMesh = std::make_shared<Mesh>(
-        generateSphereVertices(15.0f, sphereRadius),
-        generateSphereIndices(15.0f)
+        generateSphereVertices(sphereSections, sphereRadius),
+        generateSphereIndices(sphereSections)
     );
 
     std::random_device rd;

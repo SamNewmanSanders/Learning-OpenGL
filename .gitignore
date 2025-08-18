@@ -44,3 +44,7 @@ Makefile
 
 # Ignore any log files
 *.log
+
+# Ignore the imgui file that retains info
+
+imgui.ini

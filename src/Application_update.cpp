@@ -24,6 +24,9 @@ void Application::update() {
         if (pos.x >  bounds) { pos.x =  bounds; vel.x *= -1.0f; }
         if (pos.z < -bounds) { pos.z = -bounds; vel.z *= -1.0f; }
         if (pos.z >  bounds) { pos.z =  bounds; vel.z *= -1.0f; }
+        if (pos.y >  bounds) { pos.y =  bounds; vel.y *= -1.0f; }
+    
+            // Write back
 
         entity.setPosition(pos);
         entity.setVelocity(vel);
