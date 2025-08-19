@@ -9,6 +9,7 @@
 void Application::setupScene()
 {
 
+    // This uses the 1x1x1 cube centered on the origin to make the mesh
     auto cubeMesh = std::make_shared<Mesh>(
         std::vector<float>(cubeVertices, cubeVertices + sizeof(cubeVertices)/sizeof(float)),
         std::vector<unsigned int>(cubeIndices, cubeIndices + sizeof(cubeIndices)/sizeof(unsigned int))

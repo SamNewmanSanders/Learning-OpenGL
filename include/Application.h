@@ -37,7 +37,7 @@ inline int numSpheres = 5000;
 inline float boxSize = 100.0f;
 inline float wallThickness = 1.0f;
 inline float sphereRadius = 0.5f;
-inline float cubeTransparency = 0.1f;
+inline float cubeTransparency = 0.05f;
 inline float sphereSections = 8.0f;
 inline float gridCellSize = 1.0f;
 
