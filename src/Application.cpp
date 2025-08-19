@@ -15,7 +15,7 @@ Application::Application(int width, int height, const char* title)
 
     auto shaderProgram = std::make_shared<Shader>("shaders/default.vert", "shaders/default.frag");
     renderer = std::make_unique<Renderer>(shaderProgram, window);
-    physicsUpdater= std::make_unique<PhysicsUpdater>(boxSize, sphereRadius, wallThickness);
+    physicsUpdater= std::make_unique<PhysicsUpdater>(boxSize, sphereRadius, wallThickness, gridCellSize);
 
     setupScene();
 }
@@ -78,13 +78,14 @@ void Application::run() {
         float currentFrame = (float)glfwGetTime();
         deltaTime = (currentFrame - lastFrame);
         lastFrame = currentFrame;
+        float simDeltaTime = deltaTime * deltaTimeMultiplier;
 
         fpsTracker.update((float)glfwGetTime());
 
         processInputs();
 
         perfLogger.beginStage("Update");
-        physicsUpdater->update(deltaTime, deltaTimeMultiplier, dynamicEntities);
+        physicsUpdater->update(simDeltaTime, dynamicEntities);
         perfLogger.endStage("Update");
 
         perfLogger.beginStage("Render");

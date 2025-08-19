@@ -24,7 +24,7 @@ void Renderer::drawEntity(Entity& entity,
 
     glm::mat4 model = entity.getModelMatrix();
     glm::mat4 view = camera.getViewMatrix();
-    glm::mat4 projection = glm::perspective(glm::radians(camera.getZoom()), aspect, 0.1f, 200.0f);
+    glm::mat4 projection = glm::perspective(glm::radians(camera.getZoom()), aspect, 0.1f, 500.0f);
     glm::vec3 viewPos = camera.getPosition();
 
 
