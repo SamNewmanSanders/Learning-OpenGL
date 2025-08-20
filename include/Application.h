@@ -72,6 +72,7 @@ private:
     std::vector<Entity> dynamicEntities;
     std::vector<Entity> staticEntities;
 
+    
 
     // Timing
     float deltaTime;

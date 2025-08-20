@@ -1,6 +1,7 @@
 #pragma once
 
 #include <glad/glad.h>
+#include <glm/glm.hpp>
 
 #include <vector>
 #include <memory>
@@ -16,13 +17,23 @@ public:
          const std::vector<unsigned int>& indices);
     ~Mesh();
 
+    void setUpInstancing(size_t maxNumInstances) {maxInstances = maxNumInstances;} // Called only with instanced objects (not spheres)
+
     void Draw();  // draw the mesh (single instance for now)
+
+    void updateInstanceMatrices(const std::vector<glm::mat4>& models);
+    void updateInstanceDiffuseColors(const std::vector<glm::vec3>& colors);
+    void DrawInstanced();
 
 private:
 
     std::unique_ptr<VAO> vao;
     std::unique_ptr<VBO> vbo;   
     std::unique_ptr<EBO> ebo;
+    size_t indexCount; // For ebo
 
-    size_t indexCount;
+    std::unique_ptr<VBO> instancevbo; // stores per-instance model matrices
+    std::unique_ptr<VBO> instanceColorvbo; 
+    size_t maxInstances = 0; // Max number of spheres (in this case)
+
 };
