@@ -43,6 +43,7 @@ void Application::setupScene()
         generateSphereVertices(sphereSections, sphereRadius),
         generateSphereIndices(sphereSections)
     );
+    sphereMesh->setUpInstancing(numSpheres); // Didn't do this for the box as instancing not required
 
     std::random_device rd;
     std::mt19937 gen(rd());

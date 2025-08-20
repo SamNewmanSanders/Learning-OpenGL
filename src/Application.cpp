@@ -146,8 +146,7 @@ void Application::render() {
 
     renderer->beginFrame();
 
-    for (auto& entity : dynamicEntities)
-        renderer->drawEntity(entity, camera);
+    renderer->drawInstancedEntities(dynamicEntities, camera);
 
     auto sortedStatics = sortEntitiesByDistance(staticEntities, camera.getPosition());
     
@@ -165,8 +164,13 @@ void Application::render() {
     uiHandler->render(deltaTimeMultiplier);
 
     renderer->endFrame();
-}
 
+    //  Debugging
+    GLenum e;
+    while ((e = glGetError()) != GL_NO_ERROR) {
+        std::cerr << "GL error: 0x" << std::hex << e << std::dec << "\n";
+    }
+}
 
 // === Utility ===
 void Application::toggleFullscreen() {

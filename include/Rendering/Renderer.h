@@ -20,8 +20,12 @@ public:
     Renderer(std::shared_ptr<Shader> shader, GLFWwindow* window);
 
     void beginFrame();
+
     void drawEntity(Entity& entity, 
         const Camera& camera);
+
+    void drawInstancedEntities(std::vector<Entity>& dynamicEntities, const Camera& camera);
+
     void endFrame();
 
 private:

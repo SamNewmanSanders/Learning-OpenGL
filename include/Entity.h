@@ -22,7 +22,8 @@ public:
 
     std::shared_ptr<Mesh> getMesh() const;
 
-    Material& getMaterial() { return material; } // Reference so it can be modified directly
+    Material& getMaterial() { return material; } // Different things call this differently so provide two functions
+    const Material& getMaterial() const { return material; }
 
     void setVelocity(const glm::vec3& vel) { velocity = vel; }
     glm::vec3& getVelocity() { return velocity; }
