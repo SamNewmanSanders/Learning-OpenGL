@@ -21,6 +21,7 @@ Mesh::Mesh(const std::vector<float>& vertices, const std::vector<unsigned int>& 
     vbo->Unbind();
 }
 
+
 void Mesh::setUpInstancing(size_t maxNumInstances)
 {
     maxInstances = maxNumInstances;
