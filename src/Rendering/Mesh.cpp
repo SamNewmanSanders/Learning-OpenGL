@@ -25,7 +25,9 @@ void Mesh::setUpInstancing(size_t maxNumInstances)
 {
     maxInstances = maxNumInstances;
 
-        // Allocate buffer for all instances at once
+    vao->Bind();
+
+    // Allocate buffer for all instances at once
     instancevbo = std::make_unique<VBO>(nullptr, maxInstances * sizeof(glm::mat4));
     instancevbo->Bind(); // As long as the correct vbo is bound it will remember the config (can use same vbo)
 
