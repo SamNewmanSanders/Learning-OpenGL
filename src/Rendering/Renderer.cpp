@@ -94,10 +94,8 @@ void Renderer::drawInstancedEntities(std::vector<Entity>& dynamicEntities, const
     mesh->updateInstanceDiffuseColors(diffuseColors);
 
     // --- 3) Draw all instances in one call ---
-    mesh->DrawInstanced();
+    mesh->DrawInstanced(static_cast<GLsizei>(models.size()));
 }
-
-
 
 
 void Renderer::endFrame() {

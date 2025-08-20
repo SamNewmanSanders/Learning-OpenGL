@@ -19,11 +19,13 @@ Mesh::Mesh(const std::vector<float>& vertices, const std::vector<unsigned int>& 
     vao->LinkAttrib(*vbo, 1, 3, GL_FLOAT, 6 * sizeof(float), (void*)(3 * sizeof(float))); // normal
 
     vbo->Unbind();
+}
 
+void Mesh::setUpInstancing(size_t maxNumInstances)
+{
+    maxInstances = maxNumInstances;
 
-    // Set up instancing stuff
-
-    // Allocate buffer for all instances at once
+        // Allocate buffer for all instances at once
     instancevbo = std::make_unique<VBO>(nullptr, maxInstances * sizeof(glm::mat4));
     instancevbo->Bind(); // As long as the correct vbo is bound it will remember the config (can use same vbo)
 
@@ -75,9 +77,9 @@ void Mesh::updateInstanceMatrices(const std::vector<glm::mat4>& models) {
     instancevbo->Unbind();
 }
 
-void Mesh::DrawInstanced() {
+void Mesh::DrawInstanced(GLsizei count) {
     vao->Bind();
-    glDrawElementsInstanced(GL_TRIANGLES, static_cast<GLsizei>(indexCount), GL_UNSIGNED_INT, 0, maxInstances);
+    glDrawElementsInstanced(GL_TRIANGLES, static_cast<GLsizei>(indexCount), GL_UNSIGNED_INT, 0, count);
     vao->Unbind();
 }
 

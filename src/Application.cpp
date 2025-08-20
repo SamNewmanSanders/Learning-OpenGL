@@ -147,9 +147,6 @@ void Application::render() {
     renderer->beginFrame();
 
     renderer->drawInstancedEntities(dynamicEntities, camera);
-    
-    //for (auto& entity : dynamicEntities)
-        //renderer->drawEntity(entity, camera);
 
     auto sortedStatics = sortEntitiesByDistance(staticEntities, camera.getPosition());
     
@@ -157,8 +154,8 @@ void Application::render() {
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glDepthMask(GL_FALSE); // stop writing to depth buffer
 
-    //for (auto& entity : sortedStatics)
-        //renderer->drawEntity(entity, camera);
+    for (auto& entity : sortedStatics)
+        renderer->drawEntity(entity, camera);
 
     //Reenable depth testing
     glDepthMask(GL_TRUE);
@@ -167,8 +164,13 @@ void Application::render() {
     uiHandler->render(deltaTimeMultiplier);
 
     renderer->endFrame();
-}
 
+    //  Debugging
+    GLenum e;
+    while ((e = glGetError()) != GL_NO_ERROR) {
+        std::cerr << "GL error: 0x" << std::hex << e << std::dec << "\n";
+    }
+}
 
 // === Utility ===
 void Application::toggleFullscreen() {

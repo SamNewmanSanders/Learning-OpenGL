@@ -17,13 +17,13 @@ public:
          const std::vector<unsigned int>& indices);
     ~Mesh();
 
-    void setUpInstancing(size_t maxNumInstances) {maxInstances = maxNumInstances;} // Called only with instanced objects (not spheres)
+    void setUpInstancing(size_t maxNumInstances);
 
     void Draw();  // draw the mesh (single instance for now)
 
     void updateInstanceMatrices(const std::vector<glm::mat4>& models);
     void updateInstanceDiffuseColors(const std::vector<glm::vec3>& colors);
-    void DrawInstanced();
+    void DrawInstanced(GLsizei count);
 
 private:
 
