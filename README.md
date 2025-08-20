@@ -8,3 +8,4 @@ The second objective is to optimize the program. I intentionally used naive phsy
 
 **Version #2** (spatial partitioning). 5000 balls at average 19.6 FPS. Ovbiously improved the updating speed, now only 34% of total.
 Still loads of room for improvement with SOA's, maybe compute shaders but would like to learn instancing first. Slo-mo'd the sim and physics still works 
+

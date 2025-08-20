@@ -69,6 +69,7 @@ Mesh::~Mesh() {
 }
 
 void Mesh::Draw() {
+    
     vao->Bind();
     glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(indexCount), GL_UNSIGNED_INT, 0);
     vao->Unbind();
