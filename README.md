@@ -1,14 +1,14 @@
-Two project objectives: **Learn basic graphics** and **gain optimization experience**
+In this project I learnt graphics fundamentals and openGL. My program rendered bouncing balls inside a transparent cube with basic lighting and camera control. imGUI was also used. (Version #1)
+My next objective was then to optimize the program. The bouncing ball sim is good for this as it is a simple idea so I can focus on optimization that isn't only applicable to this program.
 
-So firstly I learnt openGL and made my program capable of rendering bouncing spheres inside a transparent box using basic lighting. (Also integrated imGUI). See version #1
+**Version 1** using naive ball-ball collision and rendering: **1000 balls at 18FPS**. 80% of time spend on the collision update loops - O(N^2)
 
-The second objective is to optimize the program. I intentionally used naive phsysics (sphere-sphere collisions) and naive rendering (no instancing) at first so I could see the effect. I also chose a simple ball collision program so I can focus on technique rather than scenario specific optimisation.
+**Version 2** implements spatial partitioning: **5000 balls at 19.6FPS**. 25x improvement, now 34% spend on update loop
 
-**Version #1** (naive version). 1000 balls at average 18 FPS. Predictably 80% of time spent updating collisions.
+**Version 3** implements instancing. **5000 balls at 36.8FPS**. 43% spent rendering. Expected a greater performance improvement but rendering performance shouldn't be influenced by the particle number much now.
+Also a bug where I can see individual triangles of the box but I will ignore for now. Video at https://drive.google.com/file/d/1AadGuN_76DQubrQ6pWYZwHZHRWBp5F61/view?usp=drive_link, had to slow sim speed otherwise video compression would ruin it.
 
-**Version #2** (spatial partitioning). 5000 balls at average 19.6 FPS. Ovbiously improved the updating speed, now only 34% of total.
-Still loads of room for improvement with SOA's, maybe compute shaders but would like to learn instancing first. Slo-mo'd the sim and physics still works.
-Video at https://drive.google.com/file/d/1xnR_nPwuwuIgMVL-JhT2dzjx7j-oGpEw/view?usp=drive_link, compression killed quality
-
-**Version #3** Implemented instancing which took a while. 5000 balls at average 36.8 FPS, 43% of time spent rendering now. Definite improvement but somewhat dissapointed because I thought the performance improvement would be greater and it also induced a bug where I can see the individual triangles of the glass box. Tried to fix it but going to ignore for now. I think I can still improve rendering performance by avoiding vectors of objects but will go back to physics for now as it takes longer.
-Video at https://drive.google.com/file/d/1AadGuN_76DQubrQ6pWYZwHZHRWBp5F61/view?usp=drive_link, had to slow sim speed otherwise compression would ruin it
+Future optimisation ideas:
+  - Avoid vectors of objects which are bad for cache friendliness. Use arrays instead for variables like position, velocity (can go through these much quicker). AOS vs SOA
+  - Compute shader if implemented right would massively speed up update loop as its all parrallel computations. Be careful of double counting to maintain energy
+  - Improve hash function (use single 64 bit int)
